@@ -1,6 +1,6 @@
 # Embedded-Week-5
 
-Last week you worked on the motor chassis controls which is the bottom half of the robots. This week we will take a look at the top half (Pitch, Yaw, Shoot).
+Last week you worked on the motor chassis controls which is the bottom half of the robots. This week we will take a look at the top half movements(Pitch, Yaw, Shoot).
 
 ## Pitch 
 
@@ -28,7 +28,7 @@ Both pitch and yaw are part of the robot's degrees of freedom, which allow it to
 
 ## Shooting
 
-
+In order for us to shoot, we use a indexer to store our bullets and feed it into a tube which then will use two flywheels to launch the ball out of the barrel. 
 
 ### Instantiating Fly Wheel and Indexer
 ```p
