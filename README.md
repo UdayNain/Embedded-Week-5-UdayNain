@@ -69,6 +69,7 @@ if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
                 // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
                 LFLYWHEEL.setSpeed(0);
+            }
 ```
 ## Assignment
 
