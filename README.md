@@ -9,7 +9,28 @@ Pitch refers to the up and down movement of the robot's top half. This movement 
 ### Sample Implementation 
 
 ```cpp
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
+```
+```cpp
+desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
+                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+
+                if (desiredPitch >= LOWERBOUND) {
+                    // printff("u%f\n",desiredPitch);
+                    desiredPitch = LOWERBOUND;
+                }
+                else if (desiredPitch <= UPPERBOUND) {
+                    // printff("d%f\n",desiredPitch);
+                    desiredPitch = UPPERBOUND;
+                }
+
+                float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+
+            } else{
+                pitch.setPower(0);
+            }
 ```
 
 ##  Yaw
@@ -19,9 +40,15 @@ Yaw refers to the left and right rotation of the robot's top half around a verti
 ### Sample Implementation
 
 ```cpp
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
+DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 ```
 
+```cpp
+yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                if(remote.rightX() > 10 || remote.rightX() < -10){
+                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+                }
+```
 ## Conclusion
 
 Both pitch and yaw are part of the robot's degrees of freedom, which allow it to interact with its environment in more complex ways. Understanding how to control these movements is fundamental for operating the robot effectively in various tasks.
@@ -73,3 +100,4 @@ if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
 ```
 ## Assignment
 
+Create a simple setup where you can control the pitch and yaw with the remote. Implement a simple shooting code with a timer/buffer. 
