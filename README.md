@@ -38,7 +38,7 @@ desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
 
 Yaw refers to the left and right rotation of the robot's top half around a vertical axis. This movement allows the robot to turn and face different directions without changing its location. Yaw is essential for navigation, aiming, and any situation where the robot needs to adjust its orientation relative to its surroundings.
 
-![Visualization of Yaw](picture/picture/YAW__2_-removebg-preview.png)
+![Visualization of Yaw](picture/YAW__2_-removebg-preview.png)
 ### Sample Implementation
 
 ```cpp
