@@ -108,4 +108,10 @@ if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
 
 ## Assignment
 
-Create a simple setup where you can control the pitch and yaw with the remote. Implement a simple shooting code with a timer/buffer.
+For this assignment, we're going to focus on controlling the movement of the robot's upper half—specifically, the pitch and yaw mechanisms. The controls will be connected to the right switch on your remote.
+
+Your task is to instantiate both the yaw and pitch motors using the examples provided earlier. Using the right joystick, you'll control these movements: pushing left and right (negative and positive X positions) will rotate the yaw, allowing the robot to spin left and right. Pushing up and down (negative and positive Y positions) will adjust the pitch, moving the robot's upper half up and down.
+
+By the end of this assignment, the robot should be able to complete a full rotation in both directions for yaw, and the pitch should move up and down three times. You can optionally add PID (Proportional, Integral, Derivative) control values to make the movements smoother.
+
+Starting code is once again provided in the assignment files. 
