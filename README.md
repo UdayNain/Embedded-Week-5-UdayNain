@@ -112,7 +112,7 @@ For this assignment, we're going to focus on controlling the movement of the rob
 
 Your task is to instantiate both the yaw and pitch motors using the examples provided earlier. Using the right joystick, you'll control these movements: pushing left and right (negative and positive X positions) will rotate the yaw, allowing the robot to spin left and right. Pushing up and down (negative and positive Y positions) will adjust the pitch, moving the robot's upper half up and down.
 
-By the end of this assignment, the robot should be able to complete a full rotation in both directions for yaw, and the pitch should move up and down three times. You can optionally add PID control values to make the movements smoother.
+By the end of this assignment, the robot should be able to complete a full rotation in both directions for yaw, and you should be able to change the position of the pitch. You can optionally add PID control values to make the movements smoother.
 
 As before, starting code is provided in the assignment files. Remember to use CANBUS 2 for all the motors since we're working on the upper half of the robot.
 
@@ -122,6 +122,10 @@ For this assignment, we'll be focusing on the shooting mechanism of our robot. T
 
 In the DOWN position, the robot should enter an "off" mode where the flywheels are turned off. When the switch is in the MID position, both flywheels should turn on and get ready to shoot. Finally, in the UP position, the robot should shoot the balls using the indexer.
 
-Your task is to implement the indexer and flywheel controls according to this logic. Additionally, you need to implement a timer or cooldown mechanism that prevents the robot from shooting more than three times in a row.
+Your task is to implement the indexer and flywheel controls according to the logic above. Additionally, you need to implement a timer or cooldown mechanism that makes the robot shoot 3 balls at a time.
 
 As before, starting code is provided in the assignment files. Remember to use CANBUS 2 for all the motors since we're working on the upper half of the robot.
+
+Note: 
+
+Test in person with robots.
