@@ -11,13 +11,17 @@ Pitch refers to the up and down movement of the robot's top half. This movement 
 ### Sample Implementation
 
 ```cpp
+//Instantiate Pitch
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
 ```
 
 ```cpp
+// Update the desired pitch angle based on user inputs
 desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
-                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
 
+// Decrease desiredPitch by the left joystick's value scaled by a sensitivity constant
+                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+                // Constrain desiredPitch within the specified bounds
                 if (desiredPitch >= LOWERBOUND) {
                     // printff("u%f\n",desiredPitch);
                     desiredPitch = LOWERBOUND;
@@ -27,11 +31,15 @@ desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
                     desiredPitch = UPPERBOUND;
                 }
 
+                // Calculate the feedforward term for the PID controller
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+                // Set the feedforward value in the pitch PID controller
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                // Set the pitch motor to move to the desired position
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
             } else{
+                // If the control is disabled, set the pitch motor power to zero
                 pitch.setPower(0);
             }
 ```
@@ -44,12 +52,16 @@ Yaw refers to the left and right rotation of the robot's top half around a verti
 ### Sample Implementation
 
 ```cpp
+//Instantiate Yaw
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 ```
 
 ```cpp
+// Decrease yawSetPoint by the mouse's horizontal movement scaled by a sensitivity constant
 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                // Check if the right joystick's X-axis input exceeds a deadzone threshold
                 if(remote.rightX() > 10 || remote.rightX() < -10){
+                    // Decrease yawSetPoint by the right joystick's X-axis input scaled by a sensitivity constant
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
 ```
@@ -67,6 +79,7 @@ Note: Everytime when we shoot a bullet the barrel will "heat up". If we go over 
 ### Instantiating Fly Wheel and Indexer (Infantry)
 
 ```p
+//Instantiate Indexer, R&L Flywheel
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508,"RightFly");
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508,"LeftFly");
@@ -77,14 +90,16 @@ The code below shows how we implemented the shooting algorithm.
 First, inside the refloop we uses the left switch of our remote to do all the shooting stuff. To begin with the last statement which turns our fly wheel off when the left switch is in DOWN mode. This is the base state where you don't want to shoot. If you move the left switch to MID, it turns on the two fly wheels. This is where you are preparing to shoot. Lastly if you turn the state to UP then you are shooting. Bullets will only come out if you're not on cooldown. Switch between UP and MID for optimal performance.
 
 ```cpp
-
+// Check if the left switch is in the UP position or the left mouse button is pressed
 if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+                // If the system is ready to shoot
                 if (shootReady){
                     shootReady = false;
                     // shoot = true;
+                    // Calculate the target position for the indexer to shoot
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
 
-                    //shoot limit
+                    // Check if shooting is allowed based on heat limits
                     if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
                         shoot = true;
                     }
@@ -94,13 +109,16 @@ if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
                 //SwitchState state set to mid/down/unknown
                 shootReady = true;
             }
-
+            // Control the flywheels based on the left switch position
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                // If the left switch is in UP or MID position
+                // Turn on the flywheels at specified speeds
                 RFLYWHEEL.setSpeed(7000);
                 LFLYWHEEL.setSpeed(-7000);
             } else{
-                // left SwitchState set to up/mid/unknown
+                // If the left switch is DOWN or UNKNOWN
+                // Turn off the flywheels
                 RFLYWHEEL.setSpeed(0);
                 LFLYWHEEL.setSpeed(0);
             }
