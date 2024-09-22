@@ -106,12 +106,22 @@ if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
             }
 ```
 
-## Assignment
+## Assignment #1
 
 For this assignment, we're going to focus on controlling the movement of the robot's upper half—specifically, the pitch and yaw mechanisms. The controls will be connected to the right switch on your remote.
 
 Your task is to instantiate both the yaw and pitch motors using the examples provided earlier. Using the right joystick, you'll control these movements: pushing left and right (negative and positive X positions) will rotate the yaw, allowing the robot to spin left and right. Pushing up and down (negative and positive Y positions) will adjust the pitch, moving the robot's upper half up and down.
 
-By the end of this assignment, the robot should be able to complete a full rotation in both directions for yaw, and the pitch should move up and down three times. You can optionally add PID (Proportional, Integral, Derivative) control values to make the movements smoother.
+By the end of this assignment, the robot should be able to complete a full rotation in both directions for yaw, and the pitch should move up and down three times. You can optionally add PID control values to make the movements smoother.
 
-Starting code is once again provided in the assignment files. 
+As before, starting code is provided in the assignment files. Remember to use CANBUS 2 for all the motors since we're working on the upper half of the robot.
+
+## Assignment #2
+
+For this assignment, we'll be focusing on the shooting mechanism of our robot. The controls will be tied to the left switch, which has three states: UP, MID, and DOWN. We'll be working with the flywheels and the indexer to make this happen.
+
+In the DOWN position, the robot should enter an "off" mode where the flywheels are turned off. When the switch is in the MID position, both flywheels should turn on and get ready to shoot. Finally, in the UP position, the robot should shoot the balls using the indexer.
+
+Your task is to implement the indexer and flywheel controls according to this logic. Additionally, you need to implement a timer or cooldown mechanism that prevents the robot from shooting more than three times in a row.
+
+As before, starting code is provided in the assignment files. Remember to use CANBUS 2 for all the motors since we're working on the upper half of the robot.
