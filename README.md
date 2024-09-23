@@ -16,32 +16,33 @@ DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
 ```
 
 ```cpp
-// Update the desired pitch angle based on user inputs
-desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
+if(pitch_enabled){
+    // Update the desired pitch angle based on user inputs
+    desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
+    
+    // Decrease desiredPitch by the left joystick's value scaled by a sensitivity constant
+    desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+    // Constrain desiredPitch within the specified bounds
+    if (desiredPitch >= LOWERBOUND) {
+        // printff("u%f\n",desiredPitch);
+        desiredPitch = LOWERBOUND;
+    }
+    else if (desiredPitch <= UPPERBOUND) {
+        // printff("d%f\n",desiredPitch);
+        desiredPitch = UPPERBOUND;
+    }
 
-// Decrease desiredPitch by the left joystick's value scaled by a sensitivity constant
-                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
-                // Constrain desiredPitch within the specified bounds
-                if (desiredPitch >= LOWERBOUND) {
-                    // printff("u%f\n",desiredPitch);
-                    desiredPitch = LOWERBOUND;
-                }
-                else if (desiredPitch <= UPPERBOUND) {
-                    // printff("d%f\n",desiredPitch);
-                    desiredPitch = UPPERBOUND;
-                }
+    // Calculate the feedforward term for the PID controller
+    float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+    // Set the feedforward value in the pitch PID controller
+    pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+    // Set the pitch motor to move to the desired position
+    pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
-                // Calculate the feedforward term for the PID controller
-                float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                // Set the feedforward value in the pitch PID controller
-                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                // Set the pitch motor to move to the desired position
-                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
-
-            } else{
-                // If the control is disabled, set the pitch motor power to zero
-                pitch.setPower(0);
-            }
+} else{
+    // If the control is disabled, set the pitch motor power to zero
+    pitch.setPower(0);
+}
 ```
 
 ## Yaw
@@ -59,11 +60,11 @@ DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 ```cpp
 // Decrease yawSetPoint by the mouse's horizontal movement scaled by a sensitivity constant
 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                // Check if the right joystick's X-axis input exceeds a deadzone threshold
-                if(remote.rightX() > 10 || remote.rightX() < -10){
-                    // Decrease yawSetPoint by the right joystick's X-axis input scaled by a sensitivity constant
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                }
+// Check if the right joystick's X-axis input exceeds a deadzone threshold
+if(remote.rightX() > 10 || remote.rightX() < -10){
+    // Decrease yawSetPoint by the right joystick's X-axis input scaled by a sensitivity constant
+    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+}
 ```
 
 ## Conclusion
