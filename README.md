@@ -141,7 +141,7 @@ For this assignment, we'll be focusing on the shooting mechanism of our robot. T
 
 In the DOWN position, the robot should enter an "off" mode where the flywheels are turned off. When the switch is in the MID position, both flywheels should turn on and get ready to shoot. Finally, in the UP position, the robot should shoot the balls using the indexer.
 
-Your task is to implement the indexer and flywheel controls according to the logic above. Additionally, you need to implement a timer or cooldown mechanism that makes the robot shoot 3 balls at a time.
+Your task is to implement the indexer and flywheel controls according to the logic above. Additionally, you need to implement a timer or cooldown mechanism that makes the robot shoot 3 balls at a time, every time the left switch goes from MIDDLE to UP.
 
 As before, starting code is provided in the assignment files. Remember to use CANBUS 2 for all the motors since we're working on the upper half of the robot.
 
