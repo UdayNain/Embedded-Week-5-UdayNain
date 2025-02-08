@@ -12,7 +12,13 @@ I2C i2c(I2C_SDA, I2C_SCL);
 //DEFINE MOTORS, ETC
 
 int main(){
-
+    DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
+    DJIMotor yaw(5, CANHandler::CANBUS_2, GIMBLY,"Yeah");
+    int yawSetPoint = 0;
+    int rightStickValueX = 0;
+    int rightStickValueY = 0;
+    int desiredPitch = 0;
+    float FF = 0;
     //assigning can handler objects to motor class.
     DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false); 
 
@@ -44,6 +50,35 @@ int main(){
             remoteRead(); //reading data from remote
 
             //MAIN CODE 
+            //YAW
+            rightStickValueX = remote.rightX()/660;
+            if(remote.rightX()>10 || remote.rightX()<-10){
+                yawSetPoint -= rightStickValueX * JOYSTICK_SENSE_YAW;
+            }
+            yaw.setPosition(yawSetPoint);
+            
+            //PITCH
+            Remote::SwitchState pitch_enabled = remote.rightSwitch();
+            if(pitch_enabled == Remote::SwitchState::UP){
+                rightStickValueY = remote.rightY()/660;
+                desiredPitch -= rightStickValueY *JOYSTICK_SENSE_PITCH;
+                if(desiredPitch>=LOWERBOUND){
+                    desiredPitch = LOWERBOUND;
+                }
+                else if(desiredPitch<=UPPERBOUND){
+                    desiredPitch=UPPERBOUND;
+                }
+                FF = k * sin((desiredPitch/180*PI)-pitch_phase);
+                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                pitch.setPosition(int((desiredPitch/360)*TICKS_REVOLUTION + InitialOffset_Ticks));
+            }
+            else{
+                pitch.setPower(0);
+            }
+            
+            
+            
+            
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
 
             timeEnd_u = us_ticker_read();
