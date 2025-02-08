@@ -22,6 +22,10 @@ int main(){
     int rightStickValueY = 0;
     int desiredPitch = 0;
     float FF = 0;
+    bool shootReady = false;
+    bool shoot = false;
+    
+
     //assigning can handler objects to motor class.
     DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false); 
 
