@@ -14,6 +14,9 @@ I2C i2c(I2C_SDA, I2C_SCL);
 int main(){
     DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
     DJIMotor yaw(5, CANHandler::CANBUS_2, GIMBLY,"Yeah");
+    DJImotor indexer(7,CANHandler::CANbus_2,C610,"Indexer");
+    DJImotor RFLYWHEEL(8,CANHandler::CANbus_2,M3508,"RightFly");
+    DJImotor LFLYWHEEL(5,CANHandler::CANbus_2,M3508,"LeftFly");
     int yawSetPoint = 0;
     int rightStickValueX = 0;
     int rightStickValueY = 0;
@@ -76,6 +79,26 @@ int main(){
                 pitch.setPower(0);
             }
             
+            //Shoot
+            Remote::SwitchState leftSwitchValue = remote.leftSwitch();
+            if(leftSwitchValue == Remote::SwitchState::UP){
+                shootReady = false;
+                shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+                if(robot.status.shooter_barrel_heat_limit<10 || power_heat_datashooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40){
+                    shoot = true;
+                }
+            }
+            else{
+                shootReady = true;
+            }
+            if(leftSwitchValue != Remote::SwitchState::DOWN || leftSwitchValue != Remote::SwitchState::UNKNOWN){
+                RFLYWHEEL.setSpeed(7000);
+                LFLYWHEEL.setSpeed(-7000);
+            }
+            else{
+                RFLYWHEEL.setSpeed(0);
+                LFLYWHEEL.setSpeed(0);
+            }
             
             
             
